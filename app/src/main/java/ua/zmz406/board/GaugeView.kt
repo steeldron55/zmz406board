@@ -53,7 +53,7 @@ class GaugeView(ctx: Context) : View(ctx) {
         val sw = s * 0.065f
         val r = s / 2f - sw
         val cx = width / 2f
-        val cy = height / 2f
+        val cy = height / 2f + r * 0.146f
         rect.set(cx - r, cy - r, cx + r, cy + r)
         val span = maxV - minV
 
@@ -100,6 +100,6 @@ class GaugeView(ctx: Context) : View(ctx) {
         c.drawText(Math.round(shown).toString() + suffix, cx, cy + s * 0.07f, txt)
         txt.color = 0xFFA9B3BC.toInt()
         txt.textSize = s * 0.055f
-        c.drawText(unit, cx, cy + s * 0.17f, txt)
+        c.drawText(unit, cx, cy + s * 0.13f, txt)
     }
 }

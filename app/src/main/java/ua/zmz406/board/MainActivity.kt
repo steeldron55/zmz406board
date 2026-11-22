@@ -126,6 +126,8 @@ class MainActivity : Activity() {
         val root = LinearLayout(this)
         root.orientation = LinearLayout.VERTICAL
         root.setPadding(dp(20), dp(12), dp(20), dp(12))
+        root.clipToPadding = false
+        root.clipChildren = false
         root.setOnApplyWindowInsetsListener { v, ins ->
             var l = 0
             var t = 0
@@ -147,6 +149,8 @@ class MainActivity : Activity() {
         val bar = LinearLayout(this)
         bar.gravity = Gravity.CENTER_VERTICAL
         bar.setPadding(dp(6), 0, dp(6), 0)
+        bar.clipToPadding = false
+        bar.clipChildren = false
         checkPill = TextView(this)
         checkPill.textSize = 16f
         checkPill.setTypeface(null, Typeface.BOLD)
