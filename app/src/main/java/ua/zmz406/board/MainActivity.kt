@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.hardware.usb.UsbManager
 import android.os.Build
@@ -59,12 +60,14 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setBackgroundDrawable(ColorDrawable(BG))
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        if (Build.VERSION.SDK_INT >= 28) {
+            val lp = window.attributes
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            window.attributes = lp
+        }
+        hideSystemUi()
 
         val root = FrameLayout(this)
         root.setBackgroundColor(BG)
@@ -76,6 +79,21 @@ class MainActivity : Activity() {
         updateCheck()
         runSplash()
         chooseSource()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun hideSystemUi() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) hideSystemUi()
     }
 
     private fun cardBg(): GradientDrawable {
@@ -108,9 +126,27 @@ class MainActivity : Activity() {
         val root = LinearLayout(this)
         root.orientation = LinearLayout.VERTICAL
         root.setPadding(dp(20), dp(12), dp(20), dp(12))
+        root.setOnApplyWindowInsetsListener { v, ins ->
+            var l = 0
+            var t = 0
+            var r = 0
+            var b = 0
+            if (Build.VERSION.SDK_INT >= 28) {
+                val c = ins.displayCutout
+                if (c != null) {
+                    l = c.safeInsetLeft
+                    t = c.safeInsetTop
+                    r = c.safeInsetRight
+                    b = c.safeInsetBottom
+                }
+            }
+            v.setPadding(dp(20) + l, dp(12) + t, dp(20) + r, dp(12) + b)
+            ins
+        }
 
         val bar = LinearLayout(this)
         bar.gravity = Gravity.CENTER_VERTICAL
+        bar.setPadding(dp(6), 0, dp(6), 0)
         checkPill = TextView(this)
         checkPill.textSize = 16f
         checkPill.setTypeface(null, Typeface.BOLD)
@@ -146,7 +182,7 @@ class MainActivity : Activity() {
         temp.amberFrom = 100f
         temp.redFrom = 105f
         temp.baseColor = 0xFF3DD6C4.toInt()
-        temp.unit = "охл. жидкость"
+        temp.unit = "темп. ОЖ"
         temp.suffix = "°"
         temp.labels = listOf("40", "60", "80", "100", "120")
 

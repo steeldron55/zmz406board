@@ -90,13 +90,13 @@ class GaugeView(ctx: Context) : View(ctx) {
                 val sa = sin(ang).toFloat()
                 c.drawLine(cx + ca * (r - sw * 1.9f), cy + sa * (r - sw * 1.9f),
                     cx + ca * (r - sw * 1.1f), cy + sa * (r - sw * 1.1f), p)
-                c.drawText(labels[i], cx + ca * (r - sw * 3.1f),
-                    cy + sa * (r - sw * 3.1f) + txt.textSize * 0.35f, txt)
+                c.drawText(labels[i], cx + ca * (r - sw * 2.9f),
+                    cy + sa * (r - sw * 2.9f) + txt.textSize * 0.35f, txt)
             }
         }
 
         txt.color = if (shown >= redFrom) 0xFFFF8A8E.toInt() else 0xFFF2F5F7.toInt()
-        txt.textSize = s * 0.19f
+        txt.textSize = s * 0.165f
         c.drawText(Math.round(shown).toString() + suffix, cx, cy + s * 0.07f, txt)
         txt.color = 0xFFA9B3BC.toInt()
         txt.textSize = s * 0.055f
